@@ -107,7 +107,7 @@ def run(
     vid_path, vid_writer = [None] * bs, [None] * bs
 
     ##############################################################
-    #rev_by_a
+    #rev
     with open("./position_classes.txt","r") as classes_file:
         position_classes = classes_file.readlines()
     with open("./position_label.txt","r") as file:
@@ -157,7 +157,7 @@ def run(
             seen += 1
             if webcam:  # batch_size >= 1
                 p, im0, frame = path[i], im0s[i].copy(), dataset.count
-                #s += f'{i}: ' #rev_by_a
+                #s += f'{i}: ' #rev
                 s += f'カメラ入力：{i}: '
             else:
                 p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
@@ -165,9 +165,9 @@ def run(
             p = Path(p)  # to Path
             save_path = str(save_dir / p.name)  # im.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # im.txt
-            s = "【入力 " + s.split(" ")[1] + " " + s.split(" ") [2] #rev_by_a
+            s = "【入力 " + s.split(" ")[1] + " " + s.split(" ") [2] #rev
             #s += '%gx%g ' % im.shape[2:]  # print string
-            s += ' %gx%g ' % im.shape[2:] + "】　" # print string #rev_by_a
+            s += ' %gx%g ' % im.shape[2:] + "】　" # print string #rev
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
@@ -180,14 +180,14 @@ def run(
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
-                    #s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string #rev_by_a
+                    #s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string #rev
                     s += f"【{names[int(c)]}　：　{n}台】"
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     ######################################################################
                     #rev_by_a
                     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    #print("===========") #rev_by_a
+                    #print("===========") #rev
                     #print(xywh)
                     position_x1 = xywh[0] - (xywh[2]/2)
                     position_x2 = xywh[0] + (xywh[2]/2)
@@ -196,11 +196,14 @@ def run(
                     #print(position_x1, position_x2, position_y1, position_y2)
                     for pos_cls, pos_value in position_data.items():
                         if position_x1<pos_value[0] and position_x2>pos_value[1] and position_y1<pos_value[2] and position_y2>pos_value[3]:
-                            pos_data.append(pos_cls)
+                            park_pos = pos_cls.split("\n")[0]
+                            if park_pos not in pos_data:
+                                pos_data.append(park_pos)
                     unused_position = []
                     for position in position_classes:
-                        if position not in pos_data:
-                            unused_position.append(position)
+                        pos_num = position.split("\n")[0]
+                        if pos_num not in pos_data:
+                            unused_position.append(pos_num)
                     
 
 
@@ -222,7 +225,7 @@ def run(
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
 
-                time.sleep(interval) #rev_by_a
+                time.sleep(interval) #rev
 
             # Stream results
             im0 = annotator.result()
@@ -250,18 +253,18 @@ def run(
                     vid_writer[i].write(im0)
 
         # Print time (inference-only)
-        #LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)') #rev_by_a
-        LOGGER.info(f'{s}(処理時間{t3 - t2:.3f}sec)') #rev_by_a
+        #LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)') #rev
+        LOGGER.info(f'{s}(処理時間{t3 - t2:.3f}sec)') #rev
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
-    #LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t) #rev_by_a
+    #LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t) #rev
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        #LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}") #rev_by_a
+        #LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}") #rev
         LOGGER.info(f"駐車中：{pos_data}")
         LOGGER.info(f"空：{unused_position}")
-        LOGGER.info(f"判定結果は {colorstr('bold', save_dir)}{s}　へ保存しています。") #rev_by_a
+        LOGGER.info(f"判定結果は {colorstr('bold', save_dir)}{s}　へ保存しています。") #rev
     if update:
         strip_optimizer(weights)  # update model (to fix SourceChangeWarning)
 
@@ -294,7 +297,7 @@ def parse_opt():
     parser.add_argument('--hide-conf', default=False, action='store_true', help='hide confidences')
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
-    parser.add_argument('--interval',type=int, default=0, help='interval time for every detection loop [sec]') #rev_by_a
+    parser.add_argument('--interval',type=int, default=0, help='interval time for every detection loop [sec]') #rev
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     print_args(vars(opt))
