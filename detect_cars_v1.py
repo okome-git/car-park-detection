@@ -300,7 +300,7 @@ def parse_opt():
     parser.add_argument('--interval',type=int, default=0, help='interval time for every detection loop [sec]') #rev
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
-    print_args(vars(opt))
+    #print_args(vars(opt))
     return opt
 
 

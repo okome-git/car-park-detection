@@ -191,7 +191,7 @@ def print_args(args: Optional[dict] = None, show_file=True, show_fcn=False):
         args, _, _, frm = inspect.getargvalues(x)
         args = {k: v for k, v in frm.items() if k in args}
     s = (f'{Path(file).stem}: ' if show_file else '') + (f'{fcn}: ' if show_fcn else '')
-    LOGGER.info(colorstr(s) + ', '.join(f'{k}={v}' for k, v in args.items()))
+    #LOGGER.info(colorstr(s) + ', '.join(f'{k}={v}' for k, v in args.items()))
 
 
 def init_seeds(seed=0):
@@ -311,7 +311,7 @@ def check_git_status():
         s += f"⚠️ YOLOv5 is out of date by {n} commit{'s' * (n > 1)}. Use `git pull` or `git clone {url}` to update."
     else:
         s += f'up to date with {url} ✅'
-    LOGGER.info(emojis(s))  # emoji-safe
+    #LOGGER.info(emojis(s))  # emoji-safe
 
 
 def check_python(minimum='3.7.0'):
@@ -365,7 +365,7 @@ def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), insta
         source = file.resolve() if 'file' in locals() else requirements
         s = f"{prefix} {n} package{'s' * (n > 1)} updated per {source}\n" \
             f"{prefix} ⚠️ {colorstr('bold', 'Restart runtime or rerun command for updates to take effect')}\n"
-        LOGGER.info(emojis(s))
+        #LOGGER.info(emojis(s))
 
 
 def check_img_size(imgsz, s=32, floor=0):
@@ -895,9 +895,9 @@ def print_mutation(results, hyp, save_dir, bucket, prefix=colorstr('evolve: ')):
         yaml.safe_dump(data.loc[i][7:].to_dict(), f, sort_keys=False)
 
     # Print to screen
-    LOGGER.info(prefix + f'{generations} generations finished, current result:\n' + prefix +
-                ', '.join(f'{x.strip():>20s}' for x in keys) + '\n' + prefix + ', '.join(f'{x:20.5g}'
-                                                                                         for x in vals) + '\n\n')
+    # #LOGGER.info(prefix + f'{generations} generations finished, current result:\n' + prefix +
+    #             ', '.join(f'{x.strip():>20s}' for x in keys) + '\n' + prefix + ', '.join(f'{x:20.5g}'
+    #                                                                                      for x in vals) + '\n\n')
 
     if bucket:
         os.system(f'gsutil cp {evolve_csv} {evolve_yaml} gs://{bucket}')  # upload

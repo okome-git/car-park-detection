@@ -236,7 +236,8 @@ class Model(nn.Module):
         return self
 
     def info(self, verbose=False, img_size=640):  # print model information
-        model_info(self, verbose, img_size)
+        #model_info(self, verbose, img_size)
+        LOGGER.info("....................")
 
     def _apply(self, fn):
         # Apply to(), cpu(), cuda(), half() to model tensors that are not parameters or registered buffers
@@ -314,7 +315,7 @@ if __name__ == '__main__':
     parser.add_argument('--test', action='store_true', help='test all yolo*.yaml')
     opt = parser.parse_args()
     opt.cfg = check_yaml(opt.cfg)  # check YAML
-    print_args(vars(opt))
+    #print_args(vars(opt))
     device = select_device(opt.device)
 
     # Create model
