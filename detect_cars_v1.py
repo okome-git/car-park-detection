@@ -157,17 +157,20 @@ def run(
             seen += 1
             if webcam:  # batch_size >= 1
                 p, im0, frame = path[i], im0s[i].copy(), dataset.count
-                #s += f'{i}: ' #rev
-                s += f'カメラ入力：{i}: '
+                s += f'{i}: ' #rev
+                # s += f'カメラ入力：{i}: '
             else:
                 p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
+            
+            time.sleep(interval)
 
             p = Path(p)  # to Path
             save_path = str(save_dir / p.name)  # im.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # im.txt
-            s = "【入力 " + s.split(" ")[1] + " " + s.split(" ") [2] #rev
-            #s += '%gx%g ' % im.shape[2:]  # print string
-            s += ' %gx%g ' % im.shape[2:] + "】　" # print string #rev
+            print(s)
+            # s = "【入力 " + s.split(" ")[1] + " " + s.split(" ")[2] #rev
+            s += '%gx%g ' % im.shape[2:]  # print string
+            # s += ' %gx%g ' % im.shape[2:] + "】　" # print string #rev
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
@@ -207,8 +210,6 @@ def run(
                     
 
 
-
-
                     #########################################################################
 
                     if save_txt:  # Write to file
@@ -223,9 +224,6 @@ def run(
                         annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
-
-
-                time.sleep(interval) #rev
 
             # Stream results
             im0 = annotator.result()
@@ -255,6 +253,12 @@ def run(
         # Print time (inference-only)
         #LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)') #rev
         LOGGER.info(f'{s}(処理時間{t3 - t2:.3f}sec)') #rev
+        try:
+            LOGGER.info(f"空：{unused_position}")
+            LOGGER.info(f"駐車中：{pos_data}")
+            del pos_data, unused_position
+        except:
+            LOGGER.info("すべて空車")
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
