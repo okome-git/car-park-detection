@@ -30,14 +30,25 @@
     * リポジトリ直下に物体検知に用いる学習重み（ptファイル）をコピーする。（別途提供）
 
 ## 車体数検知方法
-* リポジトリ直下の　detect_cars_v1.py を実行する。
+### 画像 動画データの場合
+* リポジトリ直下の　detect_cars_imagefile.py を実行する。
     * パラメータ
         * --weights 学習重みファイル： ex. weights.pt
         * --interval 検知間隔(秒)： ex. 1分　→　60
-        * --source 入力データ：　カメラ→　0(デバイスNO)、画像→フォルダPath ./data/images/
+        * --source 入力データ：　画像→フォルダPath ./data/images/
     ```
-    python3 detect_cars_v1.py --weights weights.pt --interval 60 --source 0
+    python detect_cars_imagefile.py --weights car_aerial_view.pt --source ./data/sample/
     ```
+
+### webカメラやIPカメラの場合
+* リポジトリ直下の　detect_cars_camera_input.py を実行する。
+    * パラメータ
+        * --weights 学習重みファイル： ex. weights.pt
+        * --interval 検知間隔(秒)： ex. 1分　→　60
+        * --source 入力データ：　webカメラ 0(デバイスNO) , IPカメラ http://***
+    python detect_cars_camera_input.py --weights car_aerial_view.pt --interval 60 --source 0
+    ```
+
 ## 出力
 * ログ例　（指定画入力時）
     ```
