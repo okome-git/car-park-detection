@@ -29,12 +29,28 @@
     * リポジトリ直下に　1.にて作成した　position_label.txt　及び　position_classes.txt　をコピーする。
     * リポジトリ直下に物体検知に用いる学習重み（ptファイル）をコピーする。（別途提供）
 
+## 単純検知方法
+* リポジトリ直下の　detect.py を実行する。
+    * パラメータ
+        * --weights 学習重みファイル： ex. weights.pt
+        * --source 入力データ：　画像→フォルダPath ./data/images/
+    ```
+    python detect_cars_imagefile.py --weights car_aerial_view.pt --source ./data/sample/
+    ```
+    * COCOの重みを利用する場合
+        * --weights yolov5s.pt
+        * --classes 3 6 8 
+           https://gist.github.com/AruniRC/7b3dadd004da04c80198557db5da4bda
+        * --source 入力データ：　画像→フォルダPath ./data/images/
+    ```
+    python detect_cars_imagefile.py --weights yolov5s.pt --source ./data/sample/ --classes 3 6 8
+    ```
+
 ## 車体数検知方法
 ### 画像 動画データの場合
 * リポジトリ直下の　detect_cars_imagefile.py を実行する。
     * パラメータ
         * --weights 学習重みファイル： ex. weights.pt
-        * --interval 検知間隔(秒)： ex. 1分　→　60
         * --source 入力データ：　画像→フォルダPath ./data/images/
     ```
     python detect_cars_imagefile.py --weights car_aerial_view.pt --source ./data/sample/
